@@ -15,11 +15,13 @@ import Services from '../services';
 import {ORANGE, PINK, WHITE} from '../../styles';
 
 export default class UpcomingListItem extends Component {
+
+  onPress = () => this.props.onPress(this.props.data);
   
   render() {
     const {title, backdrop_path} = this.props.data;
     return (
-      <TouchableOpacity style={styles.container}>
+      <TouchableOpacity style={styles.container} onPress={this.onPress}>
         <View style={styles.wrapper}>
           <Image source={{uri:`${Services.imageUrl}w500${backdrop_path}`}} style={styles.img}/>
           <LinearGradient colors={[ORANGE, PINK]} style={styles.overlay}/>

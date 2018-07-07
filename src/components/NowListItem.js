@@ -12,11 +12,13 @@ import {
 import Services from '../services';
 
 export default class NowListItem extends Component {
+
+  onPress = () => this.props.onPress(this.props.data);
   
   render() {
     const {title, poster_path} = this.props.data;
     return (
-      <TouchableOpacity style={styles.container}>
+      <TouchableOpacity style={styles.container} onPress={this.onPress}>
         <Image source={{uri:`${Services.imageUrl}w500${poster_path}`}} style={styles.img}/>
         <Text style={styles.title}>{title}</Text>
         <View style={styles.imgshadow} />

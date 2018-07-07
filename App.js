@@ -8,6 +8,7 @@ import {Provider} from 'react-redux';
 
 import Welcome from './src/screens/welcome';
 import MovieList from './src/screens/movielist';
+import MovieDetails from './src/screens/moviedetails';
 import store from './src/redux/store';
 
 const RootStack = createStackNavigator({
@@ -19,6 +20,12 @@ const RootStack = createStackNavigator({
   },
   movielist: {
     screen: MovieList,
+    navigationOptions: {
+      header: null
+    }
+  },
+  moviedetails: {
+    screen: MovieDetails,
     navigationOptions: {
       header: null
     }

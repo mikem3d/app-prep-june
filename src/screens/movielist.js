@@ -13,6 +13,8 @@ import {
 } from 'react-native';
 import {connect} from 'react-redux';
 
+import {selectMovie} from '../redux/actions/search';
+
 import {ORANGE, PINK, WHITE, GREYBG} from '../../styles';
 
 import UpcomingListItem from '../components/UpcomingListItem';
@@ -50,22 +52,41 @@ class MovieList extends Component {
 
   keyExtractor = item => `${item.id}`;
 
+  onDetails = movie => {
+    const {selectMovie, navigation} = this.props;
+    // set selected movie
+    selectMovie(movie);
+    // navigate to details
+    navigation.navigate('moviedetails');
+  }
+
   renderUpcoming = ({item}) => (
-    <UpcomingListItem data={item} />
+    <UpcomingListItem data={item} onPress={this.onDetails} />
   );
 
   renderNowPlaying = ({item}) => (
-    <NowListItem data={item} />
+    <NowListItem data={item} onPress={this.onDetails} />
   )
 
   render() {
     const {results, query} = this.props;
-    console.log(results);
     return (
       <ScrollView style={styles.container}>
         <SearchBar />
         {
-          results && query.length != 0 ? <View/> :
+          results.length && query.length
+          ?
+          <View>
+            <Text>SEARCH RESULTS</Text>
+              <FlatList
+                data={results}
+                extraData={this.props}
+                keyExtractor={this.keyExtractor}
+                renderItem={this.renderNowPlaying}
+                horizontal
+              />
+          </View>
+          :
           <View>
             <View>
               <Text style={styles.title}>MOVIES</Text>
@@ -112,4 +133,8 @@ const mapStateToProps = state => ({
   isLoading: state.activity
 });
 
-export default connect(mapStateToProps)(MovieList) // = ReactNative Component with all the props injected
+const mapDispatchToProps = dispatch => ({
+  selectMovie: movie => dispatch(selectMovie(movie))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(MovieList) // = ReactNative Component with all the props injected

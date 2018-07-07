@@ -3,13 +3,13 @@ import React, {Component} from 'react';
 import {
   StyleSheet,
   View,
-  TextInput
+  TextInput,
+  ActivityIndicator
 } from 'react-native';
 import {connect} from 'react-redux';
 
-import {updateSearchResults, updateSearchQuery} from '../redux/actions/search';
+import {fetchSearchResults, updateSearchQuery} from '../redux/actions/search';
 
-import Services from '../services';
 import {PINK} from '../../styles';
 
 class SearchBar extends Component {
@@ -19,18 +19,25 @@ class SearchBar extends Component {
   }
 
   onSubmit = () => {
-    // call api
-    Services.getSearchResults(this.props.query).then(response => console.log(response));
+    const {query, fetchSearchResults, isSearching} = this.props;
+    if(!isSearching) {
+      this.props.fetchSearchResults(query)
+    }
   }
 
   render () {
+    const {isSearching} = this.props;
+    const _disabled = {
+      opacity: isSearching ? 0.3 : 1
+    }
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, _disabled]}>
         <TextInput
           style={styles.textinput}
           value={this.props.query}
           onChangeText={this.onChange}
           onSubmitEditing={this.onSubmit} />
+        { isSearching ? <ActivityIndicator animating style={styles.spinner} color='#fff' /> : null }
       </View>
     )
   }
@@ -49,6 +56,11 @@ const styles = StyleSheet.create({
   textinput: {
     fontSize: 16,
     color: '#fff'
+  },
+  spinner: {
+    position: 'absolute',
+    right: 20,
+    top: 15
   }
 });
 
@@ -58,7 +70,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  updateSearchResults: results => dispatch(updateSearchResults(results)),
+  fetchSearchResults: query => dispatch(fetchSearchResults(query)),
   updateSearchQuery: query => dispatch(updateSearchQuery(query))
 })
 
