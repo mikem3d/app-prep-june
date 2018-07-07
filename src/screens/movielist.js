@@ -59,6 +59,8 @@ class MovieList extends Component {
   )
 
   render() {
+    const {results, query} = this.props;
+    console.log(results);
     return (
       <ScrollView style={styles.container}>
         <SearchBar />
