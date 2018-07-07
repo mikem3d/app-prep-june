@@ -11,15 +11,17 @@ import {
   LayoutAnimation,
   View
 } from 'react-native';
+import {connect} from 'react-redux';
 
 import {ORANGE, PINK, WHITE, GREYBG} from '../../styles';
 
 import UpcomingListItem from '../components/UpcomingListItem';
 import NowListItem from '../components/NowListItem';
+import SearchBar from '../components/SearchBar';
 
 import Services from '../services';
 
-export default class MovieList extends Component {
+class MovieList extends Component {
   state = {
     upcoming: [
       {id:0, title: ''},
@@ -59,24 +61,32 @@ export default class MovieList extends Component {
   render() {
     return (
       <ScrollView style={styles.container}>
-        <Text style={styles.title}>MOVIES</Text>
-        <FlatList
-          data={this.state.upcoming}
-          extraData={this.state}
-          keyExtractor={this.keyExtractor}
-          renderItem={this.renderUpcoming}
-          horizontal
-        />
-        <View style={styles.listcontainer}>
-          <Text>NOW</Text>
-          <FlatList
-            data={this.state.nowplaying}
-            extraData={this.state}
-            keyExtractor={this.keyExtractor}
-            renderItem={this.renderNowPlaying}
-            horizontal
-          />
-        </View>
+        <SearchBar />
+        {
+          results && query.length != 0 ? <View/> :
+          <View>
+            <View>
+              <Text style={styles.title}>MOVIES</Text>
+              <FlatList
+                data={this.state.upcoming}
+                extraData={this.state}
+                keyExtractor={this.keyExtractor}
+                renderItem={this.renderUpcoming}
+                horizontal
+              />
+            </View>
+            <View style={styles.listcontainer}>
+              <Text>NOW</Text>
+              <FlatList
+                data={this.state.nowplaying}
+                extraData={this.state}
+                keyExtractor={this.keyExtractor}
+                renderItem={this.renderNowPlaying}
+                horizontal
+              />
+            </View>
+          </View>
+        }
       </ScrollView>
     );
   }
@@ -84,7 +94,6 @@ export default class MovieList extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: GREYBG,
     paddingLeft: 20
   },
@@ -92,5 +101,13 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: '600',
     marginTop: 80
-  }
+  },
 });
+
+const mapStateToProps = state => ({
+  results: state.search.searchResults,
+  query: state.search.query,
+  isLoading: state.activity
+});
+
+export default connect(mapStateToProps)(MovieList) // = ReactNative Component with all the props injected

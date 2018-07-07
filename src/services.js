@@ -24,5 +24,9 @@ export default {
 
   getPopularMovies () {
     return this.apiCall('movie/popular');
+  },
+
+  getSearchResults (searchParam) {
+    return this.apiCall('search/movie', 'GET', `&query=${searchParam}`)
   }
 }
